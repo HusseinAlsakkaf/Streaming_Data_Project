@@ -46,24 +46,30 @@ def publish_to_kinesis(formatted_articles: list[dict]) -> bool:
         }
         records.append(record)
 
+
     try:
         response = kinesis_client.put_records(
-            StreamName=config.KINESIS_STREAM_NAME, Records=records
+            StreamName=config.KINESIS_STREAM_NAME,
+            Records=records
         )
-
-        failed_record_count = response.get("FailedRecordCount", 0)
-        if failed_record_count > 0:
-            logging.error(
-                f"Publishing to Kinesis failed for {failed_record_count} records."
-            )
-            return False  
         
-        logging.info("Successfully published all records to Kinesis.")
-        return True
+        failed_record_count = response.get('FailedRecordCount', 0)
+        total_records = len(records)
+        
+        if failed_record_count > 0:
+            logging.warning(f"Publishing to Kinesis failed for {failed_record_count} out of {total_records} records.")
+        
+        successful_record_count = total_records - failed_record_count
+        if successful_record_count > 0:
+            logging.info(f"Successfully published {successful_record_count} records to Kinesis.")
+        
+        return successful_record_count > 0
 
     except ClientError as e:
+        # This block catches errors like 'Stream not found'
         logging.error(f"An AWS client error occurred: {e.response['Error']['Message']}")
         return False
     except Exception as e:
+        # This block catches other errors like network issues
         logging.error(f"An unexpected error occurred during publishing: {e}")
         return False

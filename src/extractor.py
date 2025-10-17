@@ -1,9 +1,8 @@
 import requests
 import logging
-from src import config
+import config
 from pprint import pprint
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -28,7 +27,7 @@ def fetch_articles(search_query: str, date_from: str = None) -> list:
         "show-fields": "body",
     }
 
-    # Add the from-date to the parameters only if it's provided by user
+    # Add the from-date to the parameters only if it's provided by user othersise its omitted
     if date_from:
         params["from-date"] = date_from
 
@@ -37,13 +36,10 @@ def fetch_articles(search_query: str, date_from: str = None) -> list:
     )
 
     try:
-        # New, fixed version
         response = requests.get(config.BASE_URL, params=params, timeout=15)
-        # This will raise an exception for HTTP error codes (4xx or 5xx)
         response.raise_for_status()
 
         data = response.json()
-        # Safely access the results list, returning [] if keys are missing
         results = data.get("response", {}).get("results", [])
         logging.info(f"Successfully found {len(results)} articles.")
         return results
@@ -52,13 +48,7 @@ def fetch_articles(search_query: str, date_from: str = None) -> list:
         logging.error(
             f"HTTP error occurred: {http_err} - Status Code: {response.status_code}"
         )
-        return []  # Return an empty list to indicate failure
+        return []
     except requests.exceptions.RequestException as req_err:
         logging.error(f"A request error occurred: {req_err}")
         return []
-
-
-# testing
-if __name__ == "__main__":
-    articles = fetch_articles('"machine learning"', "2025-01-01")
-    pprint(articles)

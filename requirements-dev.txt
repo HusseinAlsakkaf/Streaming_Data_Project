@@ -1,0 +1,22 @@
+
+#  production dependencies 
+boto3
+python-dotenv
+requests
+# ===================================================================
+# Development & Testing Libraries
+# ===================================================================
+
+# Testing framework and mocking libraries
+pytest
+pytest-mock
+moto[kinesis]
+
+# Code formatting and style checking
+black
+
+# Security vulnerability scanning
+bandit
+
+# Dashboarding for local demonstration
+streamlit

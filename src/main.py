@@ -5,6 +5,7 @@ from extractor import fetch_articles
 from transformer import format_articles
 from publisher import publish_to_kinesis
 
+
 # FOR HELP RUN 'python3 src/main.py --help'
 def main():
     """The main function to run the full ETP (Extract, Transform, Publish) pipeline."""

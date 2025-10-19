@@ -3,9 +3,7 @@
 boto3
 python-dotenv
 requests
-# ===================================================================
-# Development & Testing Libraries
-# ===================================================================
+
 
 # Testing framework and mocking libraries
 pytest
@@ -20,3 +18,4 @@ bandit
 
 # Dashboarding for local demonstration
 streamlit
+pandas
